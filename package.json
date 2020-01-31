@@ -1,0 +1,19 @@
+{
+  "name": "seven-music-notes",
+  "version": "0.0.1",
+  "description": "The Game 'Name That Tune', Skill for Alise",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "keywords": [
+    "alise",
+    "dialogs",
+    "game"
+  ],
+  "author": "Pushkar",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
