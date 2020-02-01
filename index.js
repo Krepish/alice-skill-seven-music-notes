@@ -6,7 +6,7 @@ const { getAnswer } = require('./getanswer');
 const port = process.env.PORT || 8888;
 let stage = 'start';
 let currentSongId;
-let counter = 0;
+let winCounter = 0;
 const MAX_COUNT = 2;
 let songsCount = 0;
 
@@ -47,7 +47,7 @@ app.post('/', function (req, res) {
     }
 
     if (MAX_COUNT - songsCount) {
-        const answer = getAnswer(stage, reqText, currentSongId);
+        const answer = getAnswer(stage, reqText, currentSongId, songsCount);
 
         text = answer.text;
         tts = answer.tts;
@@ -59,7 +59,7 @@ app.post('/', function (req, res) {
             songsCount++;
 
             if (win > 0) {
-                counter++;
+                winCounter++;
             }
         }
 
@@ -69,7 +69,7 @@ app.post('/', function (req, res) {
 
         end_session = answer.end_session || false;
     } else {
-        text = `Игра закончена. Вы угадали ${counter} из ${MAX_COUNT}. Сыграем еще раз, да или нет?`;
+        text = `Игра закончена. Вы угадали ${winCounter} из ${MAX_COUNT}. Сыграем еще раз, да или нет?`;
         stage = 'start';
         songsCount = 0;
     }

@@ -15,10 +15,8 @@ const songs = [
     }
 ];
 
-module.exports.getRandomSong = function() {
-    var rand = Math.floor(Math.random() * songs.length);
-
-    return songs[rand];
+module.exports.getSong = function(songsCount) {
+    return songs[songsCount];
 };
 
 module.exports.songs = songs;

@@ -1,4 +1,4 @@
-const { songs, getRandomSong } = require('./songs');
+const { songs, getSong } = require('./songs');
 
 const stages = {
     start: {
@@ -19,7 +19,7 @@ const stages = {
     }
 }
 
-module.exports.getAnswer = function(stage, reqText, currentSongId) {
+module.exports.getAnswer = function(stage, reqText, currentSongId, songsCount) {
     console.log('stage, reqText, currentSongId', stage, reqText, currentSongId);
 
     const answer = {};
@@ -27,7 +27,7 @@ module.exports.getAnswer = function(stage, reqText, currentSongId) {
     console.log('currentStage', currentStage);
 
     if (stage === 'playing' && currentSongId) {
-        const song = getRandomSong();
+        const song = getSong(songsCount);
 
         console.log('currentSongId ^^^^^^^^^', currentSongId);
         const songFromCollection = songs.find(item => (item.id === currentSongId));
