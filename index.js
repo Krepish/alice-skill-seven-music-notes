@@ -34,7 +34,7 @@ app.post('/', function (req, res) {
         });
     }
 
-    if (session.message_id === 0) {
+    if (session.new) {
         songsCount = 1;
         winCounter = 0;
         currentSongId = undefined;
