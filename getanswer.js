@@ -43,14 +43,14 @@ module.exports.getAnswer = function(stage, reqText, currentSongId, songsCount) {
             songFromCollection.text.includes(reqText);
 
         if (success || successOr) {
-            answer.text = currentStage.yes + songFromCollection.songName + currentStage.nextStep;
+            answer.text = currentStage.yes + songFromCollection.songName + ' ' + currentStage.nextStep;
             // добавить паузы
-            answer.tts = currentStage.yes + songFromCollection.songName + songFromCollection.ttsExpl + currentStage.nextStep + song.tts;
+            answer.tts = currentStage.yes + songFromCollection.songName + ' ' + songFromCollection.ttsExpl + currentStage.nextStep + song.tts;
             answer.win = 1;
         } else {
-            answer.text = currentStage.no + songFromCollection.songName + currentStage.nextStep;
+            answer.text = currentStage.no + songFromCollection.songName + ' ' + currentStage.nextStep;
             // добавить паузы
-            answer.tts = currentStage.no + songFromCollection.songName + songFromCollection.ttsExpl + currentStage.nextStep + song.tts;
+            answer.tts = currentStage.no + songFromCollection.songName + ' ' + songFromCollection.ttsExpl + currentStage.nextStep + song.tts;
             answer.win = -1;
         }
 
