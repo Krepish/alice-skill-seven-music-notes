@@ -7,7 +7,7 @@ const port = process.env.PORT || 8888;
 let stage = 'start';
 let currentSongId;
 let winCounter = 0;
-const MAX_COUNT = 2; // заменить на 5
+const MAX_COUNT = 5;
 let songsCount = 1;
 
 app.use(express.json());
@@ -79,11 +79,12 @@ app.post('/', function (req, res) {
 
         end_session = answer.end_session || false;
     } else {
-        const answer = getAnswer(stage, reqText, currentSongId, songsCount, true, winCounter, MAX_COUNT);
+        const answer = getAnswer(stage, reqText, currentSongId, songsCount, true, winCounter + 1, MAX_COUNT);
 
         text = answer.text;
         stage = 'start';
         songsCount = 1;
+        winCounter = 0;
     }
 
     res.json({

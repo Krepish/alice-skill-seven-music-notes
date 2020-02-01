@@ -26,9 +26,9 @@ module.exports.getAnswer = function(stage, reqText, currentSongId, songsCount, i
     let currentStage = stages[stage];
     console.log('currentStage', currentStage);
 
-    if (stage === 'playing' && currentSongId) {
-        const song = getSong(songsCount-1);
-        const songFromCollection = songs.find(item => (item.id === currentSongId));
+    if (stage === 'playing') {
+        const song = getSong(songsCount);
+        const songFromCollection = getSong(songsCount-1);
 
         let nextStep;
         let tts;
@@ -61,7 +61,7 @@ module.exports.getAnswer = function(stage, reqText, currentSongId, songsCount, i
             answer.win = -1;
         }
 
-        answer.currentSongId = song.id;
+        // answer.currentSongId = song.id;
         answer.stage = stage;
 
         return answer;
