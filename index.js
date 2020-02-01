@@ -79,7 +79,7 @@ app.post('/', function (req, res) {
 
         end_session = answer.end_session || false;
     } else {
-        const answer = getAnswer(stage, reqText, currentSongId, songsCount, true, winCounter + 1, MAX_COUNT);
+        const answer = getAnswer('playing', reqText, currentSongId, songsCount, true, winCounter, MAX_COUNT);
 
         text = answer.text;
         stage = 'start';
