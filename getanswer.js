@@ -54,7 +54,7 @@ module.exports.getAnswer = function(stage, reqText, currentSongId, songsCount) {
     if (reqText === 'да') {
         const yesAnswer = currentStage.yes;
         if (yesAnswer) {
-            const song = getSong();
+            const song = getSong(songsCount);
 
             answer.text = yesAnswer.text;
             answer.tts = song.tts;
