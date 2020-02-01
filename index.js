@@ -8,7 +8,7 @@ let stage = 'start';
 let currentSongId;
 let winCounter = 0;
 const MAX_COUNT = 2; // заменить на 5
-let songsCount = 0;
+let songsCount = 1;
 
 app.use(express.json());
 
@@ -35,7 +35,10 @@ app.post('/', function (req, res) {
     }
 
     if (session.message_id === 0) {
-       songsCount++;
+        songsCount = 1;
+        winCounter = 0;
+        currentSongId = undefined;
+        stage = 'start';
 
         return res.json({
             session,
