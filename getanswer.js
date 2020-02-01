@@ -19,7 +19,7 @@ const stages = {
     }
 }
 
-module.exports.getAnswer = function(stage, reqText, currentSongId, songsCount) {
+module.exports.getAnswer = function(stage, reqText, currentSongId, songsCount, isFinishStep, winCounter, MAX_COUNT) {
     console.log('stage, reqText, currentSongId', stage, reqText, currentSongId);
 
     const answer = {};
@@ -27,11 +27,18 @@ module.exports.getAnswer = function(stage, reqText, currentSongId, songsCount) {
     console.log('currentStage', currentStage);
 
     if (stage === 'playing' && currentSongId) {
-        const song = getSong(songsCount);
-
-        console.log('currentSongId ^^^^^^^^^', currentSongId);
+        const song = getSong(songsCount-1);
         const songFromCollection = songs.find(item => (item.id === currentSongId));
-        console.log('song ------>', songFromCollection);
+
+        let nextStep;
+        let tts;
+
+        if (isFinishStep) {
+            nextStep = `Игра закончена. Вы угадали ${winCounter} из ${MAX_COUNT}. Сыграем еще раз, да или нет?`;
+        } else {
+            nextStep = currentStage.nextStep;
+            tts = nextStep + song.tts;
+        };
 
         // Запрос содержит одну из ключевых фраз
         const success = songFromCollection.keywords.some(k => reqText.includes(k));
@@ -43,14 +50,14 @@ module.exports.getAnswer = function(stage, reqText, currentSongId, songsCount) {
             songFromCollection.text.includes(reqText);
 
         if (success || successOr) {
-            answer.text = currentStage.yes + songFromCollection.songName + ' ' + currentStage.nextStep;
+            answer.text = currentStage.yes + songFromCollection.songName + ' ' + nextStep;
             // добавить паузы
-            answer.tts = currentStage.yes + songFromCollection.songName + ' ' + songFromCollection.ttsExpl + currentStage.nextStep + song.tts;
+            answer.tts = currentStage.yes + songFromCollection.songName + ' ' + songFromCollection.ttsExpl + tts;
             answer.win = 1;
         } else {
-            answer.text = currentStage.no + songFromCollection.songName + ' ' + currentStage.nextStep;
+            answer.text = currentStage.no + songFromCollection.songName + ' ' + nextStep;
             // добавить паузы
-            answer.tts = currentStage.no + songFromCollection.songName + ' ' + songFromCollection.ttsExpl + currentStage.nextStep + song.tts;
+            answer.tts = currentStage.no + songFromCollection.songName + ' ' + songFromCollection.ttsExpl + tts;
             answer.win = -1;
         }
 
@@ -63,10 +70,10 @@ module.exports.getAnswer = function(stage, reqText, currentSongId, songsCount) {
     if (reqText === 'да') {
         const yesAnswer = currentStage.yes;
         if (yesAnswer) {
-            const song = getSong(songsCount);
+            const song = getSong(songsCount-1);
 
             answer.text = yesAnswer.text;
-            answer.tts = song.tts;
+            answer.tts = yesAnswer.text + ' ' + song.tts;
             answer.currentSongId = song.id;
             answer.stage = yesAnswer.nextStage;
         } else {

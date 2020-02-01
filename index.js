@@ -7,7 +7,7 @@ const port = process.env.PORT || 8888;
 let stage = 'start';
 let currentSongId;
 let winCounter = 0;
-const MAX_COUNT = 2;
+const MAX_COUNT = 2; // заменить на 5
 let songsCount = 0;
 
 app.use(express.json());
@@ -35,6 +35,8 @@ app.post('/', function (req, res) {
     }
 
     if (session.message_id === 0) {
+       songsCount++;
+
         return res.json({
             session,
             version: version,
@@ -49,8 +51,10 @@ app.post('/', function (req, res) {
         });
     }
 
-    if (MAX_COUNT - songsCount) {
-        const answer = getAnswer(stage, reqText, currentSongId, songsCount);
+    const isFinishStep = MAX_COUNT === songsCount; // или пользователь сказал хватит
+
+    if (!isFinishStep) {
+        const answer = getAnswer(stage, reqText, currentSongId, songsCount, false);
 
         text = answer.text;
         tts = answer.tts;
@@ -72,9 +76,11 @@ app.post('/', function (req, res) {
 
         end_session = answer.end_session || false;
     } else {
-        text = `Игра закончена. Вы угадали ${winCounter} из ${MAX_COUNT}. Сыграем еще раз, да или нет?`;
+        const answer = getAnswer(stage, reqText, currentSongId, songsCount, true, winCounter, MAX_COUNT);
+
+        text = answer.text;
         stage = 'start';
-        songsCount = 0;
+        songsCount = 1;
     }
 
     res.json({
