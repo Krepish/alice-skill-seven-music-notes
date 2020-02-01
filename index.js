@@ -1,16 +1,22 @@
 const express = require("express");
 const app = express();
 
-const port = process.env.PORT || 3000;
+const { getAnswer } = require('./getanswer');
+
+const port = process.env.PORT || 8888;
+let stage = 'start';
+let currentSongId;
+let counter = 0;
+const MAX_COUNT = 2;
+let songsCount = 0;
 
 app.use(express.json());
 
 app.post('/', function (req, res) {
-    console.log('req', req);
-
     const { request, version, session } = req.body;
 
     let text = '';
+    let tts = '';
     let end_session = false;
     let reqText = request.original_utterance.toLowerCase();
 
@@ -29,15 +35,43 @@ app.post('/', function (req, res) {
     }
 
     if (session.message_id === 0) {
-        text = 'Привет. Спасибо, что запустили навык Семь нот. Я могу рассказать правила игры или можем сразу приступить к игре. ' +
-            'Но пока я могу только повторять фразы, которые вы сказали.';
-    } else if (reqText === 'стоп' || reqText === 'пока') {
-        text = 'Ладно, пока-пока!';
-        end_session = true;
-    } else if (reqText === 'помощь' || reqText === 'что ты умеешь' ) {
-        text = 'Пока я могу только повторять фразы, которые вы сказали.';
+        text = 'Привет. Вы запустили навык Семь нот. Давайте приступим к игре. Да или нет?';
+        return res.json({
+            session,
+            version: version,
+            response: {
+                text: text || 'Что-то пошло не так',
+                end_session
+            },
+        });
+    }
+
+    if (MAX_COUNT - songsCount) {
+        const answer = getAnswer(stage, reqText, currentSongId);
+
+        text = answer.text;
+        tts = answer.tts;
+        stage = answer.stage;
+
+        var win = answer.win;
+
+        if(win) {
+            songsCount++;
+
+            if (win > 0) {
+                counter++;
+            }
+        }
+
+        if (stage === 'playing') {
+            currentSongId =  answer.currentSongId;
+        }
+
+        end_session = answer.end_session || false;
     } else {
-        text = `Вы сказали: ${reqText}`;
+        text = `Игра закончена. Вы угадали ${counter} из ${MAX_COUNT}. Сыграем еще раз, да или нет?`;
+        stage = 'start';
+        songsCount = 0;
     }
 
     res.json({
@@ -45,6 +79,7 @@ app.post('/', function (req, res) {
         version: version,
         response: {
             text: text || 'Что-то пошло не так',
+            tts: tts,
             end_session
         },
     });
