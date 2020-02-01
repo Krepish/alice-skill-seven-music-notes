@@ -33,7 +33,16 @@ module.exports.getAnswer = function(stage, reqText, currentSongId, songsCount) {
         const songFromCollection = songs.find(item => (item.id === currentSongId));
         console.log('song ------>', songFromCollection);
 
-        if (songFromCollection.keywords.includes(reqText)) {
+        // Запрос содержит одну из ключевых фраз
+        const success = songFromCollection.keywords.some(k => reqText.includes(k));
+
+        // Запрос состоит из двух и более слов (длиннее 2 символов)
+        // и полностью входит в припев песни
+        const successOr =
+            reqText.split(' ').filter(w => w.length > 2).length > 1 &&
+            songFromCollection.text.includes(reqText);
+
+        if (success || successOr) {
             answer.text = currentStage.yes + songFromCollection.songName + currentStage.nextStep;
             // добавить паузы
             answer.tts = currentStage.yes + songFromCollection.songName + songFromCollection.ttsExpl + currentStage.nextStep + song.tts;
