@@ -62,7 +62,7 @@ module.exports.getAnswer = function(stage, reqText, currentSongId, songsCount) {
             answer.stage = yesAnswer.nextStage;
         } else {
             answer.text = currentStage.warningText,
-                answer.stage = stage
+            answer.stage = stage
         }
 
         return answer;
@@ -70,14 +70,20 @@ module.exports.getAnswer = function(stage, reqText, currentSongId, songsCount) {
 
     if (reqText === 'нет') {
         const noText = currentStage.no;
+
         if (noText) {
             answer.text = noText.text;
             answer.end_session = true;
         } else {
-            answer.text = currentStage.warningText
+            answer.text = currentStage.warningText;
         }
 
         return answer;
+    }
+
+    if (stage === 'start' && reqText !== 'нет' && reqText !== 'да') {
+        answer.text =  stages.start.warningText;
+        answer.stage = 'start';
     }
 
     return answer;
