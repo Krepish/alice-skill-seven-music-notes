@@ -35,13 +35,18 @@ app.post('/', function (req, res) {
     }
 
     if (session.message_id === 0) {
-        text = 'Привет. Вы запустили навык Семь нот. Давайте приступим к игре. Да или нет?';
         return res.json({
             session,
             version: version,
             response: {
-                text: text || 'Что-то пошло не так',
-                end_session
+                text:`
+                    Добрый вечер и добро пожаловать в игру Семь нот.
+                    Прослушайте фрагмент и угадайте песню. Готовы начить?`,
+                tts:`
+                    Добрый вечер - - и добро пожаловать в игру Семь нот.
+                    - - - <speaker audio="dialogs-upload/3ade1c63-df9b-41f9-8ec5-50b59bf9f176/e7b2cde8-add9-4853-97d9-29455bc89541.opus">
+                    - - - Прослушайте фрагмент и угадайте песню.  - - Готовы начить?`,
+                end_session,
             },
         });
     }
