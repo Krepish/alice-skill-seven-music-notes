@@ -24,7 +24,7 @@ app.post('/', function (req, res) {
         text = 'pong';
         end_session = true
 
-        res.json({
+        return res.json({
             session,
             version: version,
             response: {
@@ -87,7 +87,7 @@ app.post('/', function (req, res) {
         winCounter = 0;
     }
 
-    res.json({
+    return res.json({
         session,
         version: version,
         response: {
